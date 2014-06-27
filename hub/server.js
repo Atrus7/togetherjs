@@ -97,6 +97,15 @@ Logger.prototype = {
 
 var logger = new Logger(0, null, true);
 
+var mysql = require('mysql');
+var dbParams = JSON.parse(fs.readFileSync('../../Application/config/db.local.json', 'utf-8')).db;
+var db = mysql.createConnection({
+    host: dbParams.hostname,
+    user: dbParams.username,
+    password: dbParams.password,
+    database: dbParams.database
+});
+
 var server = http.createServer(function(request, response) {
   var url = parseUrl(request.url, true);
   var protocol = request.headers["forwarded-proto"] || "http:";
@@ -309,6 +318,14 @@ wsServer.on('request', function(request) {
       } else if (message.type === 'binary') {
         c.sendBytes(message.binaryData);
       }
+    }
+
+    // Save board into database
+    if (message.type === 'utf8') {
+        var msg = JSON.parse(message.utf8Data);
+        if (msg.type === 'app.board') {
+            db.query('UPDATE WhiteBoard SET Content = ? WHERE WhiteBoardID = ?', [msg.svg, msg.bid]);
+        }
     }
   });
   connection.on('close', function(reasonCode, description) {
