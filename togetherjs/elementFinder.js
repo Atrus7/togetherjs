@@ -155,8 +155,7 @@ define(["util", "jquery"], function (util, $) {
       for (var i=0; i<children.length; i++) {
         var child = children[i];
         if (child.nodeType == document.ELEMENT_NODE) {
-          if (typeof child.classNameIndexOf != 'undefined' &&
-              child.className.indexOf("togetherjs") != -1) {
+          if (child.className.indexOf("togetherjs") != -1) {
             continue;
           }
           count--;
