@@ -14,6 +14,8 @@ var EMPTY_ROOM_LOG_TIMEOUT = 3*60*1000; // 3 minutes
 var WebSocketServer = require('websocket').server;
 var WebSocketRouter = require('websocket').router;
 var http = require('http');
+var querystring = require('querystring');
+var url = require('url');
 var parseUrl = require('url').parse;
 var fs = require('fs');
 
@@ -309,6 +311,30 @@ wsServer.on('request', function(request) {
       } else if (message.type === 'binary') {
         c.sendBytes(message.binaryData);
       }
+    }
+
+    // Post cmd to database
+    if (parsed.type == 'app.cmd') {
+        var post_data = querystring.stringify({
+            'cmd': message.utf8Data
+        });
+
+        var req_params = url.parse(request.origin);
+        req_params.method = 'POST';
+        req_params.path = '/whiteboard/cmd.php?id=' + parsed.bid;
+        req_params.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length
+        };
+
+        var post_req = http.request(req_params, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function(chunk) {
+                console.log('Response: ' + chuck);
+            });
+        });
+        post_req.write(post_data);
+        post_req.end();
     }
   });
   connection.on('close', function(reasonCode, description) {
