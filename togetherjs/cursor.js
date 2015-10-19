@@ -454,7 +454,7 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
     });
   }
 
-  var CLICK_TRANSITION_TIME = 3000;
+  var CLICK_TRANSITION_TIME = 500;
 
   session.hub.on("cursor-click", function (pos) {
     // When the click is calculated isn't always the same as how the
@@ -491,7 +491,7 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
     });
     setTimeout(function () {
       element.addClass("togetherjs-clicking");
-    }, 100);
+    }, 10);
     setTimeout(function () {
       element.remove();
     }, CLICK_TRANSITION_TIME);
