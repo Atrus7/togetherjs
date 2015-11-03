@@ -330,7 +330,7 @@ wsServer.on('request', function(request) {
         var post_req = http.request(req_params, function(res) {
             res.setEncoding('utf8');
             res.on('data', function(chunk) {
-                console.log('Response: ' + chuck);
+                console.log('Response: ' + chunk);
             });
         });
         post_req.write(post_data);
